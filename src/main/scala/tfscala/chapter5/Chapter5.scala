@@ -18,6 +18,17 @@ object Chap5Module {
       Row('5', '0', '0', '9', '3', '6', '0', '0', '0'),
       Row('7', '0', '0', '0', '0', '8', '0', '1', '6'))
 
+    val grid001: Grid = Matrix(
+      Row('9', '5', '4', '0', '8', '0', '6', '1', '3'),
+      Row('6', '3', '8', '9', '1', '5', '7', '4', '2'),
+      Row('7', '1', '2', '3', '4', '6', '8', '9', '5'),
+      Row('3', '9', '5', '1', '6', '7', '4', '2', '8'),
+      Row('1', '4', '6', '8', '2', '3', '9', '5', '7'),
+      Row('8', '2', '7', '4', '5', '9', '1', '3', '6'),
+      Row('4', '7', '1', '5', '3', '8', '2', '6', '9'),
+      Row('2', '8', '3', '6', '9', '1', '5', '7', '4'),
+      Row('5', '6', '9', '2', '7', '4', '3', '8', '1'))
+
     println(s"Choices 000: ${choices(grid000)}")
 
     println(s"cp [[1], [2], [3]]: ${cp(List(List(1), List(2), List(3)))}")
@@ -33,6 +44,7 @@ object Chap5Module {
     println(s"boxs 000: ${boxs(grid000)}")
 
     // println(s"Solve 000: ${solve(grid000)}")
+    println(s"Solve 001: ${solve(grid001)}")
   }
 }
 
@@ -51,7 +63,7 @@ object Sudoku {
 
   def solve: Grid => List[Grid] = filter(valid) _ compose completions
 
-  def filter[A](p: (A) ⇒ Boolean)(xs: List[A]): List[A] = ???
+  def filter[A](p: (A) ⇒ Boolean)(xs: List[A]): List[A] = xs.filter(p)
 
   def completions: Grid => List[Grid] = expand _ compose choices
 
@@ -77,9 +89,12 @@ object Sudoku {
     case Nil => List(List())
   }
 
-  def all[A](p: (A) ⇒ Boolean)(xs: List[A]): Boolean = ???
+  def all[A](p: (A) ⇒ Boolean)(xs: List[A]): Boolean = xs.forall(p)
 
-  def nodups[A](xs: List[A]): Boolean = ???
+  def nodups[A](xs: List[A]): Boolean = xs match {
+    case Nil => true
+    case x :: xs => all{a: A => a != x }(xs) && nodups(xs)
+  }
 
   def rows[A](m: Matrix[A]): Matrix[A] = m
   def cols[A](m: Matrix[A]): Matrix[A] = m match {
